@@ -16,7 +16,7 @@ Add `image_hotspot` to your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  image_hotspot: ^0.1.0
+  image_hotspot: ^0.1.1
 
 ```
 

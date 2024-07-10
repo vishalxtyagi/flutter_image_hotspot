@@ -1,6 +1,6 @@
 name: image_hotspot
 description: "Create interactive hotspots on images in Flutter apps. Add clickable regions with custom shapes, tooltips, and actions for engaging user experiences."
-version: 0.1.0
+version: 0.1.1
 homepage: https://github.com/vishalxtyagi/image_hotspot
 
 environment:
