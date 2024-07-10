@@ -1,5 +1,5 @@
 name: image_hotspot
-description: A Flutter package to create interactive hotspots on images.
+description: "Create interactive hotspots on images in Flutter apps. Add clickable regions with custom shapes, tooltips, and actions for engaging user experiences."
 version: 0.0.1
 homepage: https://github.com/vishalxtyagi/image_hotspot
 
@@ -24,7 +24,7 @@ flutter:
 
   # To add assets to your package, add an assets section, like this:
    assets:
-     - assets/images/sample.jpg
+     - assets/test_image.jpg
 
   # For details regarding assets in packages, see
   # https://flutter.dev/assets-and-images/#from-packages
