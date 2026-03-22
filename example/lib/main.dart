@@ -23,8 +23,21 @@ class _DemoHome extends StatefulWidget {
   State<_DemoHome> createState() => _DemoHomeState();
 }
 
-class _DemoHomeState extends State<_DemoHome> {
-  int _tab = 0;
+class _DemoHomeState extends State<_DemoHome>
+    with SingleTickerProviderStateMixin {
+  late final TabController _tabController;
+
+  @override
+  void initState() {
+    super.initState();
+    _tabController = TabController(length: 4, vsync: this);
+  }
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +45,7 @@ class _DemoHomeState extends State<_DemoHome> {
       appBar: AppBar(
         title: const Text('Image Hotspot Demo'),
         bottom: TabBar(
-          onTap: (i) => setState(() => _tab = i),
+          controller: _tabController,
           tabs: const [
             Tab(text: 'Viewer'),
             Tab(text: 'Zoom'),
@@ -41,8 +54,8 @@ class _DemoHomeState extends State<_DemoHome> {
           ],
         ),
       ),
-      body: IndexedStack(
-        index: _tab,
+      body: TabBarView(
+        controller: _tabController,
         children: const [
           _ViewerTab(),
           _ZoomTab(),
