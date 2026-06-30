@@ -1,3 +1,19 @@
+<p align="center">
+  <img src="https://shieldcn.dev/header/gradient.svg?title=image_hotspot&subtitle=Add+interactive+responsive+hotspots+to+any+Flutter+image+%E2%80%94+in+minutes&logo=flutter&theme=dark" alt="image_hotspot Flutter Package" />
+</p>
+
+<p align="center">
+  <a href="https://pub.dev/packages/image_hotspot"><img src="https://shieldcn.dev/pub/v/image_hotspot.svg" alt="pub version" /></a>
+  <a href="https://github.com/vishalxtyagi/flutter_image_hotspot/stargazers"><img src="https://shieldcn.dev/github/stars/vishalxtyagi/flutter_image_hotspot.svg" alt="Stars" /></a>
+  <img src="https://shieldcn.dev/github/last-commit/vishalxtyagi/flutter_image_hotspot.svg" alt="Last Commit" />
+  <img src="https://shieldcn.dev/badge/platform-Android%20%7C%20iOS%20%7C%20Web%20%7C%20Desktop-02569B.svg?logo=flutter" alt="Platforms" />
+  <img src="https://shieldcn.dev/badge/status-working-22c55e.svg" alt="Status: Working" />
+</p>
+
+> **Showcase:** [vt-image-hotspot-flutter-package.pages.dev](https://vt-image-hotspot-flutter-package.pages.dev) · **pub.dev:** [image_hotspot](https://pub.dev/packages/image_hotspot)
+
+---
+
 <div align="center">
 
 # 🖼️ image_hotspot
@@ -13,9 +29,26 @@
 
 ---
 
+## 🤔 Why this exists
+
+Building tappable regions on an image — a floor plan with clickable rooms, a
+product photo with shoppable callouts, an anatomy diagram with labelled
+parts, a map with points of interest — usually means hand-rolling pixel math
+that breaks the moment the screen size or `BoxFit` changes. `image_hotspot`
+replaces that with relative coordinates, a shape system, smart tooltips, and
+an in-app editor so non-engineers can place hotspots without a redeploy —
+then ship the result as JSON.
+
+If your image is just decoration, you don't need this. If it's something
+users are meant to **click on, learn from, or shop from**, this is the part
+that's normally the most annoying to build correctly.
+
+---
+
 ## 👀 See It In Action
 
-> **Four demo tabs — all from one package**
+Run the [`example/`](example) app — it has six tabs that double as a tour of
+every feature:
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
@@ -46,7 +79,9 @@
 | **Viewer** | Mixed shapes (circle, rect, polygon, icon) with smart tooltips |
 | **Zoom** | Same hotspots — pinch to zoom, hotspots stay aligned |
 | **JSON** | Hotspots loaded from a JSON payload at runtime |
-| **Editor** | Tap to add · drag to move · tap+delete to remove |
+| **Editor** | Tap to add · drag to move · tap+delete to remove. Load your own image from the gallery, then copy the resulting hotspot list as JSON |
+| **Controller** | Add/remove hotspots programmatically via `HotspotController`, the package's `ChangeNotifier`-based API |
+| **AI Hook** | Shows the shape of `HotspotAIProvider` — the package ships **no AI of its own**; this tab is a deliberately fake stub so you can see the plumbing without being misled into thinking real detection is happening |
 
 ---
 
@@ -249,12 +284,80 @@ HotspotModel(
 
 ---
 
+### 🎛️ Programmatic Control — `HotspotController`
+
+A `ChangeNotifier`-based controller, in the spirit of `TextEditingController`,
+for managing hotspots from outside the widget tree: `add`, `remove`,
+`update`, `replace`, `clear`, `select`, and JSON `toJson()`/`fromJson()`.
+
+```dart
+final controller = HotspotController(initialHotspots: [...]);
+ImageHotspot(imagePath: 'assets/map.jpg', controller: controller);
+
+controller.add(HotspotModel(dx: 0.5, dy: 0.5, tooltip: 'New spot'));
+controller.remove('some_id');
+```
+
+---
+
+### 🧩 Any Image Widget — `HotspotLayer`
+
+`ImageHotspot` wraps an `Image`. To overlay hotspots on `CachedNetworkImage`,
+`Hero`, `SvgPicture`, or anything else, use `HotspotLayer` directly:
+
+```dart
+HotspotLayer(
+  controller: myController,
+  imageAspectRatio: 16 / 9,
+  child: CachedNetworkImage(imageUrl: url, fit: BoxFit.cover),
+)
+```
+
+---
+
+### 🤖 Pluggable AI Detection — `HotspotAIProvider`
+
+`image_hotspot` ships **zero AI** of its own — no bundled model, no network
+call. `HotspotAIProvider` is an abstract interface you implement with your
+own vision client (Claude Vision, Gemini, GPT-4o, a local TFLite model) to
+add real `detectHotspots()` / `generateTooltip()` support. The default
+`NoopAIProvider` throws a clear error rather than silently returning nothing,
+so a missing integration fails loudly instead of looking like "no hotspots
+found."
+
+```dart
+class MyVisionProvider extends HotspotAIProvider {
+  @override
+  Future<List<HotspotSuggestion>> detectHotspots(Uint8List imageBytes, {String? hints, int maxSuggestions = 10}) async {
+    final response = await myVisionClient.analyze(imageBytes);
+    return response.regions.map((r) => HotspotSuggestion(dx: r.x, dy: r.y, label: r.label)).toList();
+  }
+
+  @override
+  Future<String?> generateTooltip(Uint8List imageBytes, HotspotSuggestion region) async => ...;
+}
+
+final controller = HotspotController(aiProvider: MyVisionProvider());
+await controller.detectHotspots(); // throws HotspotAIException on failure
+```
+
+---
+
+### ♿ Accessibility
+
+Every hotspot is a `Semantics(button: true)` target with a resolved label
+(`semanticLabel` → `tooltip` → fallback), keyboard-focusable and
+activatable with Enter/Space, and respects `disableAnimations` for reduced
+motion — out of the box, no extra wiring.
+
+---
+
 ## 🚀 Installation
 
 ```yaml
 # pubspec.yaml
 dependencies:
-  image_hotspot: ^0.2.0
+  image_hotspot: ^0.3.1
 ```
 
 ```dart
