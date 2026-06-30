@@ -1,77 +1,74 @@
-# Image Hotspot
+<p align="center">
+  <img src="https://shieldcn.dev/header/gradient.svg?title=image_hotspot&subtitle=Add+interactive+responsive+hotspots+to+any+Flutter+image+%E2%80%94+in+minutes&logo=flutter&theme=dark" alt="image_hotspot Flutter Package" />
+</p>
 
-`image_hotspot` is a Flutter package that allows you to create interactive hotspots on images. It provides a simple way to define clickable areas on images that trigger custom actions when tapped.
+<p align="center">
+  <a href="https://pub.dev/packages/image_hotspot"><img src="https://shieldcn.dev/pub/v/image_hotspot.svg" alt="pub version" /></a>
+  <a href="https://github.com/vishalxtyagi/flutter_image_hotspot/stargazers"><img src="https://shieldcn.dev/github/stars/vishalxtyagi/flutter_image_hotspot.svg" alt="Stars" /></a>
+  <img src="https://shieldcn.dev/github/last-commit/vishalxtyagi/flutter_image_hotspot.svg" alt="Last Commit" />
+  <img src="https://shieldcn.dev/badge/platform-Android%20%7C%20iOS%20%7C%20Web%20%7C%20Desktop-02569B.svg?logo=flutter" alt="Platforms" />
+  <img src="https://shieldcn.dev/badge/status-working-22c55e.svg" alt="Status: Working" />
+</p>
 
-## Features
+> **Showcase:** [vt-image-hotspot-flutter-package.pages.dev](https://vt-image-hotspot-flutter-package.pages.dev) · **pub.dev:** [image_hotspot](https://pub.dev/packages/image_hotspot)
 
-- Define multiple hotspots on an image.
-- Customizable hotspot positions.
-- Trigger actions when hotspots are tapped.
+---
 
-## Getting Started
+Flutter package for adding interactive, responsive hotspots to any image. Define clickable regions with relative coordinates — they scale correctly across any screen size or `BoxFit` mode. Ships with tooltip overlays, custom shapes, and an in-app editor so non-engineers can position hotspots without redeploying.
 
-### Installation
+## Why it exists
 
-Add `image_hotspot` to your `pubspec.yaml`:
+Building tappable regions on images — floor plan clickable rooms, product photo shoppable callouts, anatomy diagram labelled parts, map points of interest — usually means hand-rolling pixel math that breaks the moment screen size or `BoxFit` changes.
+
+`image_hotspot` replaces that with:
+- Relative coordinate system (0.0–1.0) that adapts to any image size
+- Custom shape system (circle, rectangle, polygon)
+- Smart tooltips that flip to stay on-screen
+- An in-app editor so non-engineers can place hotspots without redeploy — then export the result as JSON
+
+## Install
 
 ```yaml
+# pubspec.yaml
 dependencies:
-  image_hotspot: ^0.1.1
-
+  image_hotspot: ^latest
 ```
 
-### Usage
+## Quick start
 
 ```dart
-import 'package:flutter/material.dart';
-import 'package:image_hotspot/image_hotspot.dart';
-
-void main() => runApp(const MyApp());
-
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(title: const Text('Image Hotspot Example')),
-        body: Center(
-          child: ImageHotspot(
-            imagePath: 'assets/sample_image.jpg',
-            imageWidth: 300,
-            imageHeight: 200,
-            imageFit: BoxFit.cover,
-            showTooltip: true,
-            hotspots: [
-              Hotspot(
-                x: 10,
-                y: 20,
-                onTap: () => print('Hotspot 1 tapped'),
-                tooltip: 'This is hotspot 1',
-                color: Colors.blue,
-                size: 30,
-              ),
-              Hotspot(
-                x: 200,
-                y: 150,
-                onTap: () => print('Hotspot 2 tapped'),
-                // tooltip: 'This is hotspot 2',
-                icon: Icon(Icons.star, color: Colors.yellow),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
+ImageHotspot(
+  image: AssetImage('assets/floor_plan.png'),
+  hotspots: [
+    Hotspot(
+      x: 0.35,        // relative X (0.0 = left, 1.0 = right)
+      y: 0.60,        // relative Y (0.0 = top, 1.0 = bottom)
+      label: 'Room A',
+      onTap: () => showRoomDetails(),
+    ),
+  ],
+)
 ```
 
-## Example
+## Use cases
 
-Check out the [example](https://github.com/vishalxtyagi/image_hotspot/tree/main/example) directory for a complete sample app.
+- Floor plan room navigation
+- Product image shoppable callouts
+- Anatomy / medical diagram labels
+- Interactive maps
+- Photo annotation tools
 
-## License
+## What's next
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+- Hotspot animations (pulse, glow)
+- Accessibility — screen reader labels per hotspot
+- Export hotspot JSON from in-app editor
+- Drag-to-reposition in view mode
+
+---
+
+<p align="center">
+  Built by <a href="https://vishalxtyagi.in">Vishal Tyagi</a> ·
+  <a href="https://pub.dev/packages/image_hotspot">pub.dev</a> ·
+  <a href="https://vt-image-hotspot-flutter-package.pages.dev">Showcase</a>
+</p>
